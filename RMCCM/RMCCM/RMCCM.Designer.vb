@@ -29,7 +29,7 @@ Partial Class RMCCM
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.btnStartPatching = New System.Windows.Forms.Button()
-        Me.txtLog = New System.Windows.Forms.TextBox()
+        Me.ProgressBar = New System.Windows.Forms.ProgressBar()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
@@ -75,11 +75,11 @@ Partial Class RMCCM
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.ProgressBar)
         Me.GroupBox2.Controls.Add(Me.btnStartPatching)
-        Me.GroupBox2.Controls.Add(Me.txtLog)
         Me.GroupBox2.Location = New System.Drawing.Point(12, 57)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(610, 348)
+        Me.GroupBox2.Size = New System.Drawing.Size(610, 80)
         Me.GroupBox2.TabIndex = 5
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Load Mods"
@@ -93,34 +93,30 @@ Partial Class RMCCM
         Me.btnStartPatching.Text = "Start patching"
         Me.btnStartPatching.UseVisualStyleBackColor = True
         '
-        'txtLog
+        'ProgressBar
         '
-        Me.txtLog.Location = New System.Drawing.Point(9, 48)
-        Me.txtLog.Multiline = True
-        Me.txtLog.Name = "txtLog"
-        Me.txtLog.ReadOnly = True
-        Me.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtLog.Size = New System.Drawing.Size(595, 294)
-        Me.txtLog.TabIndex = 0
+        Me.ProgressBar.Location = New System.Drawing.Point(9, 48)
+        Me.ProgressBar.Name = "ProgressBar"
+        Me.ProgressBar.Size = New System.Drawing.Size(595, 26)
+        Me.ProgressBar.TabIndex = 4
         '
         'RMCCM
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(633, 417)
+        Me.ClientSize = New System.Drawing.Size(633, 145)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.GroupBox1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(649, 456)
+        Me.MaximumSize = New System.Drawing.Size(649, 184)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(649, 456)
+        Me.MinimumSize = New System.Drawing.Size(649, 184)
         Me.Name = "RMCCM"
         Me.Text = "RMCCM"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
-        Me.GroupBox2.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -130,6 +126,6 @@ Partial Class RMCCM
     Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
     Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
     Friend WithEvents btnStartPatching As System.Windows.Forms.Button
-    Friend WithEvents txtLog As System.Windows.Forms.TextBox
+    Friend WithEvents ProgressBar As System.Windows.Forms.ProgressBar
 
 End Class

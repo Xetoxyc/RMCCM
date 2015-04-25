@@ -14,6 +14,10 @@ Public Class RMCCM
 
     Private Sub RMCCM_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         txtMinecraftPath.Text = strAppDataPath & strMinecraftPath
+
+        ProgressBar.Minimum = 0
+        ProgressBar.Value = 0
+        ProgressBar.Step = 1
     End Sub
 
     Private Sub RMCCM_Close(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
@@ -46,7 +50,7 @@ Public Class RMCCM
             oThread = New Thread(AddressOf StartPatching)
             oThread.Start()
 
-            txtLog.Text = String.Empty
+            ProgressBar.Value = 0
             btnStartPatching.Text = "Stop patching"
         End If
     End Sub
@@ -63,18 +67,15 @@ Public Class RMCCM
             Dim strFileMap As String = oWebClient.DownloadString(FILE_MAP_URI)
             Dim strFiles() As String = strFileMap.Split(vbLf)
 
+            Me.Invoke(Sub() ProgressBar.Maximum = strFiles.Length)
+
             For i As Integer = 0 To strFiles.Length - 1
                 Dim strFile As String = txtMinecraftPath.Text & strFiles(i).Substring(strFiles(i).IndexOf("/"))
                 Dim oFileInfo As New FileInfo(strFile)
 
-                AddLogEntry(vbCrLf & "Checking File " & i + 1 & "/" & strFiles.Length & "   -   " & oFileInfo.Name)
-
                 If String.IsNullOrEmpty(oFileInfo.Extension) Then
                     If Not Directory.Exists(oFileInfo.FullName) Then
                         Directory.CreateDirectory(oFileInfo.FullName)
-                        AddLogEntry(vbTab & "Creating Directory")
-                    Else
-                        AddLogEntry(vbTab & "Directory already exists")
                     End If
                 Else
                     If File.Exists(oFileInfo.FullName) Then
@@ -103,17 +104,15 @@ Public Class RMCCM
                     End If
 
                     If Not File.Exists(oFileInfo.FullName) Then
-                        AddLogEntry(vbTab & "Downloading File")
                         Try
                             oWebClient.DownloadFile(SERVER_URI & strFiles(i), oFileInfo.FullName)
                         Catch ex As Exception
-                            AddLogEntry(vbTab & ex.Message)
-                            AddLogEntry(vbTab & ex.InnerException.Message)
+                            MsgBox("Missing file """ & oFileInfo.Name & """ please contact the developer.")
                         End Try
-                    Else
-                        AddLogEntry(vbTab & "File already exists")
                     End If
                 End If
+
+                IncrementProgressBar()
             Next
         Catch ex As Exception
             If TypeOf ex Is System.Threading.ThreadAbortException Then
@@ -128,11 +127,7 @@ Public Class RMCCM
         End Try
     End Sub
 
-    Public Sub AddLogEntry(ByVal strText As String)
-        Me.Invoke(Sub()
-                      txtLog.Text &= strText & vbCrLf
-                      txtLog.SelectionStart = txtLog.Text.Length
-                      txtLog.ScrollToCaret()
-                  End Sub)
+    Public Sub IncrementProgressBar()
+        Me.Invoke(Sub() ProgressBar.PerformStep())
     End Sub
 End Class
