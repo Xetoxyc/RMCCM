@@ -3,14 +3,15 @@ Imports System.Net
 Imports System.IO
 
 Public Class RMCCM
+    Private BAD_PROCESSES As String() = {"javaw.exe", "jcef_helper.exe.exe"}
+    Private BAD_FOLDERS As String() = {"Flan", "mods"}
     Const SERVER_URI As String = "http://dl.redmc.de/"
     Const FILE_MAP_URI As String = "http://dl.redmc.de/installer_files/"
 
-    Dim strAppDataPath As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-    Dim strMinecraftPath = "\.minecraft"
-    Dim bIsRunning As Boolean = False
-
-    Dim oThread As Thread
+    Private strAppDataPath As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+    Private strMinecraftPath = "\.minecraft\"
+    Private bIsRunning As Boolean = False
+    Private oThread As Thread
 
     Private Sub RMCCM_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         txtMinecraftPath.Text = strAppDataPath & strMinecraftPath
@@ -47,13 +48,57 @@ Public Class RMCCM
                 btnStartPatching.Text = "Start patching"
             End If
         Else
-            oThread = New Thread(AddressOf StartPatching)
-            oThread.Start()
+            If CloseProcessesForPatching() AndAlso DeleteModFolders() Then
+                oThread = New Thread(AddressOf StartPatching)
+                oThread.Start()
 
-            ProgressBar.Value = 0
-            btnStartPatching.Text = "Stop patching"
+                ProgressBar.Value = 0
+                btnStartPatching.Text = "Stop patching"
+            Else
+                MsgBox("Patching stoped!")
+            End If
         End If
     End Sub
+
+    Public Function CloseProcessesForPatching() As Boolean
+        For Each strProcessName As String In BAD_PROCESSES
+            Dim oProcesses() As Process = Process.GetProcessesByName(strProcessName)
+
+            If oProcesses.Count > 0 Then
+                If MsgBox("To start the patching you need to close the process """ & strProcessName & """." & vbCrLf & "Should """ & strProcessName & """ be closed automatically?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                    For Each oProcess As Process In oProcesses
+                        oProcess.CloseMainWindow()
+
+                        While Not oProcess.HasExited
+                            Select Case MsgBox("The process could not be closed automatically. Should it be forced to close?", MsgBoxStyle.YesNoCancel)
+                                Case MsgBoxResult.Ok : oProcess.Kill()
+                                Case MsgBoxResult.Retry : oProcess.CloseMainWindow()
+                                Case MsgBoxResult.Cancel : Return False
+                            End Select
+                        End While
+                    Next
+                Else
+                    Return False
+                End If
+            End If
+        Next
+
+        Return True
+    End Function
+
+    Public Function DeleteModFolders() As Boolean
+        For Each strFolder As String In BAD_FOLDERS
+            strFolder = txtMinecraftPath.Text & strFolder
+
+            If Directory.Exists(strFolder) Then
+                If MsgBox("The folder """ & strFolder & """ already exists. Should it be deleted?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then Return False
+
+                Directory.Delete(strFolder, True)
+            End If
+        Next
+
+        Return True
+    End Function
 
     Public Sub StartPatching()
         Try
@@ -70,8 +115,8 @@ Public Class RMCCM
             Me.Invoke(Sub() ProgressBar.Maximum = strFiles.Length)
 
             For i As Integer = 0 To strFiles.Length - 1
-                Dim strFile As String = txtMinecraftPath.Text & strFiles(i).Substring(strFiles(i).IndexOf("/"))
-                Dim oFileInfo As New FileInfo(strFile)
+                Dim strFile As String = txtMinecraftPath.Text & strFiles(i).Substring(strFiles(i).IndexOf("/") + 1)
+                Dim oFileInfo As New FileInfo(System.Web.HttpUtility.HtmlDecode(strFile))
 
                 If String.IsNullOrEmpty(oFileInfo.Extension) Then
                     If Not Directory.Exists(oFileInfo.FullName) Then
@@ -114,15 +159,14 @@ Public Class RMCCM
 
                 IncrementProgressBar()
             Next
-        Catch ex As Exception
-            If TypeOf ex Is System.Threading.ThreadAbortException Then
-                Me.Invoke(Sub() btnStartPatching.Text = "Start patching")
-            Else
-                MsgBox("ERROR Please report the following to the developer." & vbCrLf & vbCrLf & ex.Message)
 
-                bIsRunning = False
+            MsgBox("Finished")
+        Catch ex As Exception
+            If Not TypeOf ex Is System.Threading.ThreadAbortException Then
+                MsgBox("ERROR Please report the following to the developer." & vbCrLf & vbCrLf & ex.Message)
             End If
         Finally
+            Me.Invoke(Sub() btnStartPatching.Text = "Start patching")
             bIsRunning = False
         End Try
     End Sub
