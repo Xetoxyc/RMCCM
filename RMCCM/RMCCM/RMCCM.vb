@@ -48,7 +48,7 @@ Public Class RMCCM
                 btnStartPatching.Text = "Start patching"
             End If
         Else
-            If CloseProcessesForPatching() AndAlso DeleteModFolders() Then
+            If CloseProcessesForPatching() AndAlso MoveMinecraftFolder() Then
                 oThread = New Thread(AddressOf StartPatching)
                 oThread.Start()
 
@@ -86,15 +86,9 @@ Public Class RMCCM
         Return True
     End Function
 
-    Public Function DeleteModFolders() As Boolean
-        For Each strFolder As String In BAD_FOLDERS
-            strFolder = txtMinecraftPath.Text & strFolder
-
-            If Directory.Exists(strFolder) Then
-                Directory.Move(strFolder, strFolder & "_Bak_" & Date.Today.ToString("yyyy_MM_dd"))
-            End If
-        Next
-
+    Public Function MoveMinecraftFolder() As Boolean
+        Directory.Move(txtMinecraftPath.Text, txtMinecraftPath.Text & "_Bak_" & Date.Today.ToString("yyyy_MM_dd"))
+        
         Return True
     End Function
 

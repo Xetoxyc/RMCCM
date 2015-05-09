@@ -64,7 +64,7 @@
     <ApplicationIcon>Resources\redmcflans.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>797D2C3C5CCF987035853571368AD144BECFC3BC</ManifestCertificateThumbprint>
