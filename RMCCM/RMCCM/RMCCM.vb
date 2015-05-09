@@ -87,8 +87,13 @@ Public Class RMCCM
     End Function
 
     Public Function MoveMinecraftFolder() As Boolean
-        Directory.Move(txtMinecraftPath.Text, txtMinecraftPath.Text & "_Bak_" & Date.Today.ToString("yyyy_MM_dd"))
-        
+        Try
+            Directory.Move(txtMinecraftPath.Text, txtMinecraftPath.Text.Trim("\", "/") & "_Bak_" & Date.Today.ToString("yyyy_MM_dd"))
+        Catch ex As Exception
+            MsgBox("""" & txtMinecraftPath.Text & """ cannot be moved because it don't exists or is already in use.")
+            Return False
+        End Try
+
         Return True
     End Function
 
