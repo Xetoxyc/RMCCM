@@ -91,9 +91,7 @@ Public Class RMCCM
             strFolder = txtMinecraftPath.Text & strFolder
 
             If Directory.Exists(strFolder) Then
-                If MsgBox("The folder """ & strFolder & """ already exists. Should it be deleted?", MsgBoxStyle.YesNo) = MsgBoxResult.No Then Return False
-
-                Directory.Delete(strFolder, True)
+                Directory.Move(strFolder, strFolder & "_Bak_" & Date.Today.ToString("yyyy_MM_dd"))
             End If
         Next
 
