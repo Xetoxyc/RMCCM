@@ -32,7 +32,7 @@ Public Class RMCCM
         oFolderDialog.RootFolder = System.Environment.SpecialFolder.ApplicationData
 
         If oFolderDialog.ShowDialog() = DialogResult.OK Then
-            txtMinecraftPath.Text = oFolderDialog.SelectedPath
+            txtMinecraftPath.Text = oFolderDialog.SelectedPath & "\"
         End If
     End Sub
 

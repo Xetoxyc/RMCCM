@@ -28,8 +28,8 @@ Partial Class RMCCM
         Me.btnChooseCustomDirectory = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.btnStartPatching = New System.Windows.Forms.Button()
         Me.ProgressBar = New System.Windows.Forms.ProgressBar()
+        Me.btnStartPatching = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
@@ -84,6 +84,13 @@ Partial Class RMCCM
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Load Mods"
         '
+        'ProgressBar
+        '
+        Me.ProgressBar.Location = New System.Drawing.Point(9, 48)
+        Me.ProgressBar.Name = "ProgressBar"
+        Me.ProgressBar.Size = New System.Drawing.Size(595, 26)
+        Me.ProgressBar.TabIndex = 4
+        '
         'btnStartPatching
         '
         Me.btnStartPatching.Location = New System.Drawing.Point(9, 19)
@@ -92,13 +99,6 @@ Partial Class RMCCM
         Me.btnStartPatching.TabIndex = 3
         Me.btnStartPatching.Text = "Start patching"
         Me.btnStartPatching.UseVisualStyleBackColor = True
-        '
-        'ProgressBar
-        '
-        Me.ProgressBar.Location = New System.Drawing.Point(9, 48)
-        Me.ProgressBar.Name = "ProgressBar"
-        Me.ProgressBar.Size = New System.Drawing.Size(595, 26)
-        Me.ProgressBar.TabIndex = 4
         '
         'RMCCM
         '
